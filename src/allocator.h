@@ -1,7 +1,6 @@
-#ifndef TRACYSTL_ALLOCATOR_H_
-#define TRACYSTL_ALLOCATOR_H_
-#include <stddef.h>
-
+#ifndef _TRACYSTL_ALLOCATOR_H_
+#define _TRACYSTL_ALLOCATOR_H_
+#include <cstddef>
 #include <utility>
 namespace tracystl {
 
