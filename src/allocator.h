@@ -85,11 +85,17 @@ void Allocator<T>::construct(T* ptr, T&& value) {
 
 template <class T>
 void Allocator<T>::destroy(T* ptr) {
+  if(ptr == nullptr) {
+    return;
+  }
   ptr->~T();
 }
 
 template <class T>
 void Allocator<T>::destroy(T* first, T* last) {
+  if(first == nullptr || last == nullptr) {
+    return;
+  }
   for (; first != last; ++first) {
     first->~T();
   }

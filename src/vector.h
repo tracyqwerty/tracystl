@@ -3,7 +3,7 @@
 
 #include "allocator.h"
 #include "iterator.h"
-// #include <cstddef> // For std::size_t
+#include <cstddef> // For std::size_t
 // #include <memory>  // For std::allocator
 
 namespace tracystl {
@@ -13,72 +13,83 @@ class Vector {
  public:
   typedef T value_type;
   typedef value_type* iterator;
+  typedef tracystl::Allocator<value_type> allocator_type;
+  typedef typename allocator_type::size_type size_type;
+  typedef typename allocator_type::reference reference;
+  typedef typename allocator_type::const_reference const_reference;
+  // take advantage of static member function
+  typedef tracystl::Allocator<value_type> data_allocator;
   typedef const value_type* const_iterator;
 
  private:
-  iterator start_;
-  iterator finish_;
-  iterator end_of_storage_;
+  iterator begin_;
+  iterator end_;
+  iterator capacity_;
 
  public:
-  Vector() : start_(0), finish_(0), end_of_storage_(0) {}
+  Vector() : begin_(nullptr), end_(nullptr), capacity_(nullptr) {}
   ~Vector() {
-    clear();
-    Allocator<value_type>::deallocate(start_);
+    data_allocator::destroy(begin_, end_);
+    data_allocator::deallocate(begin_, capacity());
   }
 
-  iterator begin() { return start_; }
-  const_iterator begin() const { return start_; }
+  iterator begin() { return begin_; }
+  const_iterator begin() const noexcept { return begin_; }
 
-  iterator end() { return finish_; }
-  const_iterator end() const { return finish_; }
+  iterator end() { return end_; }
+  const_iterator end() const noexcept { return end_; }
 
-  size_t size() const { return size_t(end() - begin()); }
-  size_t capacity() const { return size_t(end_of_storage_ - begin()); }
+  size_t size() const { return static_cast<size_type>(end_ - begin_); }
+  size_t capacity() const { return static_cast<size_type>(capacity_ - begin_); }
 
-  bool empty() const { return begin() == end(); }
+  bool empty() const { return begin_ == end_; }
 
-  value_type& operator[](size_t n) { return *(begin() + n); }
-  const value_type& operator[](size_t n) const { return *(begin() + n); }
+  reference operator[](size_t n) { return *(begin_ + n); }
+  const reference operator[](size_t n) const { return *(begin_ + n); }
 
-  void clear();
+  void clear(){end_ = begin_;}
 
   void push_back(const value_type& value);
+
+  void pop_back() { --end_; }
+
+  reference front() { return *begin_; }
+
+  const_reference front() const { return *begin_; }
+
+  reference back() { return *(end_ - 1); }
+
+  const_reference back() const { return *(end_ - 1); }
+
+  // void insert(iterator ){
+
+  // }
+
 };
 
 template <class T>
-void Vector<T>::clear() {
-  if (start_) {
-    Allocator<value_type>::destroy(start_, finish_);
-    finish_ = start_;
-  }
-}
-
-template <class T>
 void Vector<T>::push_back(const value_type& value) {
-  if (finish_ != end_of_storage_) {
-    Allocator<value_type>::construct(finish_, value);
-    ++finish_;
-  } else {
-    // Need to reallocate
+  if(end_ == capacity_){
     const size_t old_size = size();
-    const size_t len = old_size != 0 ? 2 * old_size : 1;
+    const size_t new_size = old_size != 0 ? 2 * old_size : 1;
+    // printf("new_size: %zu\n", new_size);
+    iterator new_begin = data_allocator::allocate(new_size);
 
-    iterator new_start = Allocator<value_type>::allocate(len);
-    iterator new_finish = new_start;
+    for(size_t i = 0; i < old_size; ++i){
+      data_allocator::construct(new_begin + i, *(begin_ + i));
+      data_allocator::destroy(begin_ + i);
+    }
 
-    new_finish = std::uninitialized_copy(start_, finish_, new_start);
-
-    clear();
-    Allocator<value_type>::deallocate(start_);
-
-    start_ = new_start;
-    finish_ = new_finish;
-    end_of_storage_ = new_start + len;
-
-    Allocator<value_type>::construct(finish_, value);
-    ++finish_;
+    data_allocator::deallocate(begin_);
+    printf("new_begin: %p\n", new_begin);
+    printf("begin_: %p\n", begin_);
+    begin_ = static_cast<iterator>(new_begin);
+    //new_begin;
+    end_ = new_begin + old_size;
+    capacity_ = new_begin + new_size;
   }
+  data_allocator::construct(end_, value);
+  end_++;
 }
 
 }  // namespace tracystl
