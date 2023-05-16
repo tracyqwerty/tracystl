@@ -14,3 +14,9 @@ A tiny C++ standard template library.
 ## Testing
 
 We used Google Test Framework for testing.
+
+
+
+## TODO
+
+* Instead of using ::operator new(), realize `alloc::allocate(n * sizeof(T))` and create a threadpool.
