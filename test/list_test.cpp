@@ -8,7 +8,6 @@ protected:
             list.push_back(i);
         }
     }
-
     tracystl::List<int> list;
 };
 
@@ -39,7 +38,7 @@ TEST_F(ListTest, Iterator) {
     }
 }
 
-TEST_F(ListTest, TestErase) {
+TEST_F(ListTest, Erase) {
     // Erase elements 2 and 3
     auto first = list.begin();
     auto last = first;

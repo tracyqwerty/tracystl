@@ -15,17 +15,19 @@ A tiny C++ standard template library. Powered by ChatGPT4.
 
 [iterator's code](src/iterator.h)
 
-## Container
+## Containers
 
-### vector
+### Sequence Containers
+
+#### vector
 
 [vector's code](src/vector.h)
 
-### list
+#### list
 
 [list's code](src/list.h)
 
-#### note1
+##### note1
 
 [Here](https://github.com/tracyqwerty/tracystl/blob/46ea8b4aa23938eb2d750d05a6c506f5e6d22178/src/list.h#L301) for simplicity, we use: 
 
@@ -44,6 +46,8 @@ node_allocator::deallocate(pos.node_->as_node());
 ```
 
 This method first calls `destroy` on the value contained in a node, which would call the destructor of the object (not the node itself). Then it calls `deallocate` on the node, which should free the memory associated with the node. This approach is consistent with the usual practice in C++ of first destroying an object before deallocating its memory.
+
+### Associative containers
 
 ## Testing
 
