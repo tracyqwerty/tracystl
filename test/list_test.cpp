@@ -32,9 +32,26 @@ TEST_F(ListTest, ClearAndEmpty) {
     EXPECT_TRUE(list.empty());
 }
 
-TEST_F(ListTest, TestIterator) {
+TEST_F(ListTest, Iterator) {
     int value = 0;
     for(auto it = list.begin(); it != list.end(); ++it, ++value) {
         EXPECT_EQ(*it, value);
+    }
+}
+
+TEST_F(ListTest, TestErase) {
+    // Erase elements 2 and 3
+    auto first = list.begin();
+    auto last = first;
+    std::advance(last, 2);        // Iterator to fourth element
+    // test erase(iterator first, iterator last)
+    list.erase(first, last);
+    // test erase(iterator pos)
+    list.erase(last);
+
+    std::vector<int> expected_values = {3, 4};
+    int i = 0;
+    for(auto it = list.begin(); it != list.end(); ++it, ++i) {
+        EXPECT_EQ(*it, expected_values[i]);
     }
 }

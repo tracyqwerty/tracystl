@@ -298,8 +298,8 @@ public:
     while(first != last){
       base_ptr tmp = first.node_;
       ++first;
-      data_allocator::destroy(tmp->as_node()->data_);
-      node_allocator::deallocate(tmp);
+      node_allocator::destroy(tmp->as_node());
+      node_allocator::deallocate(tmp->as_node());
       --size_;
     }
     return next_node->as_node();
