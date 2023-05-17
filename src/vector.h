@@ -4,7 +4,6 @@
 #include "allocator.h"
 #include "iterator.h"
 #include <cstddef> // For std::size_t
-// #include <memory>  // For std::allocator
 
 namespace tracystl {
 
@@ -30,7 +29,16 @@ class Vector {
   Vector() : begin_(nullptr), end_(nullptr), capacity_(nullptr) {}
   ~Vector() {
     data_allocator::destroy(begin_, end_);
-    data_allocator::deallocate(begin_, capacity());
+    data_allocator::deallocate(begin_);
+  }
+  Vector(const Vector& rhs) {
+    const size_t size = rhs.size();
+    begin_ = data_allocator::allocate(size);
+    end_ = begin_ + size;
+    capacity_ = end_;
+    for (size_t i = 0; i < size; ++i) {
+      data_allocator::construct(begin_ + i, *(rhs.begin_ + i));
+    }
   }
 
   iterator begin() { return begin_; }
@@ -44,8 +52,22 @@ class Vector {
 
   bool empty() const { return begin_ == end_; }
 
+  // in fact, begin_[n] will also work.
   reference operator[](size_t n) { return *(begin_ + n); }
   const reference operator[](size_t n) const { return *(begin_ + n); }
+  //assignment
+  Vector& operator=(const Vector& rhs){
+    if(this != &rhs){
+      const size_t size = rhs.size();
+      begin_ = data_allocator::allocate(size);
+      end_ = begin_ + size;
+      capacity_ = end_;
+      for (size_t i = 0; i < size; ++i) {
+        data_allocator::construct(begin_ + i, *(rhs.begin_ + i));
+      }
+    }
+    return *this;
+  }
 
   void clear(){end_ = begin_;}
 
@@ -61,7 +83,7 @@ class Vector {
 
   const_reference back() const { return *(end_ - 1); }
 
-  // void insert(iterator ){
+  // iterator insert(iterator pos, const_reference value){
 
   // }
 
@@ -81,10 +103,7 @@ void Vector<T>::push_back(const value_type& value) {
     }
 
     data_allocator::deallocate(begin_);
-    printf("new_begin: %p\n", new_begin);
-    printf("begin_: %p\n", begin_);
-    begin_ = static_cast<iterator>(new_begin);
-    //new_begin;
+    begin_ = new_begin;
     end_ = new_begin + old_size;
     capacity_ = new_begin + new_size;
   }

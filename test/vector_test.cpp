@@ -30,21 +30,20 @@ TEST(VectorTest, ElementAccess) {
   EXPECT_EQ(vec[2], 2);
   vec[2] = 1;
   EXPECT_EQ(vec[2], 1);
+  Vector<int> vec2(vec);
+  EXPECT_EQ(vec2[2], 1);
 }
 
-// TEST(VectorTest, Iterators) {
-//   Vector<int> vec;
-//   for (int i = 0; i < 5; ++i) {
-//     vec.push_back(i);
-//   }
-//   Vector<int>::iterator begin = vec.begin();
-//   Vector<int>::iterator end = vec.end();
-//   // 这样写也可以，但是不符合C++的规范
-//   iterator<int> begin2 = vec.begin();
-//   EXPECT_EQ(*begin, 0);
-//   EXPECT_EQ(*begin2, 0);
-//   // EXPECT_EQ(*(end - 1), 4);
-// }
+TEST(VectorTest, Iterators) {
+  Vector<int> vec;
+  for (int i = 0; i < 5; ++i) {
+    vec.push_back(i);
+  }
+  Vector<int>::iterator begin = vec.begin();
+  Vector<int>::iterator end = vec.end();
+  EXPECT_EQ(*begin, 0);
+  EXPECT_EQ(*(end - 1), 4);
+}
 
 TEST(VectorTest, Capacity) {
   Vector<int> vec;
