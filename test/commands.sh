@@ -6,6 +6,7 @@
 # This option affects both the compilation phase and the link phase. In the compilation phase, it will add appropriate macro definitions and compilation options to ensure that the source code can interact with the pthread library correctly.
 # In the link phase, it will ensure that the pthread library is linked like `-lpthread`.
 
+# `cd test`, then run `./commands.sh` to compile all test files.
 
 #allocator_test
 g++ -std=c++17 allocator_test.cpp -lgtest -lgtest_main -pthread -o allocator_test
@@ -13,3 +14,5 @@ g++ -std=c++17 allocator_test.cpp -lgtest -lgtest_main -pthread -o allocator_tes
 g++ -std=c++17 iterator_test.cpp -lgtest -lgtest_main -pthread -o iterator_test
 #vector_test
 g++ -std=c++20 vector_test.cpp -lgtest -lgtest_main -pthread -o vector_test
+#list_test
+g++ -std=c++20 list_test.cpp -lgtest -lgtest_main -pthread -o list_test
