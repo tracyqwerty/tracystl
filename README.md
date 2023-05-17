@@ -39,8 +39,8 @@ node_allocator::deallocate(pos.node_->as_node());
 Please notice that the usual practice in C++ is first destroying an object before deallocating its memory, something looks like:
 
 ```cpp
-data_allocator::destroy(tracystl::address_of(p->value)); 
-node_allocator::deallocate(p);
+data_allocator::destroy(tracystl::address_of(pos.node_->as_node()->data_)); 
+node_allocator::deallocate(pos.node_->as_node());
 ```
 
 This method first calls `destroy` on the value contained in a node, which would call the destructor of the object (not the node itself). Then it calls `deallocate` on the node, which should free the memory associated with the node. This approach is consistent with the usual practice in C++ of first destroying an object before deallocating its memory.
