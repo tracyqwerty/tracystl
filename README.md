@@ -25,15 +25,25 @@ A tiny C++ standard template library. Powered by ChatGPT4.
 
 [list's code](src/list.h)
 
-Here
+#### note1
 
-1. `data_allocator::destroy(mystl::address_of(p->value)); node_allocator::deallocate(p);`
+[Here](https://github.com/tracyqwerty/tracystl/blob/46ea8b4aa23938eb2d750d05a6c506f5e6d22178/src/list.h#L301) for simplicity, we use: 
 
-   This method first calls `destroy` on the value contained in a node, which would call the destructor of the object (not the node itself). Then it calls `deallocate` on the node, which should free the memory associated with the node. This approach is consistent with the usual practice in C++ of first destroying an object before deallocating its memory.
+```cpp
+node_allocator::destroy(pos.node_->as_node()); 
+node_allocator::deallocate(pos.node_->as_node());
+```
 
-2. `node_allocator::destroy(pos.node_->as_node()); node_allocator::deallocate(pos.node_->as_node());`
+ `destroy` is called directly on the node rather than on the value it contains. If the node contains any resources that require proper destruction (such as raw pointers), this approach would be necessary. However, if the node only contains simple data types or objects that manage their own resources, calling `destroy` on the node might not be needed. After the node has been destroyed, the method then deallocates the memory associated with the node.
 
-   Here, `destroy` is called directly on the node rather than on the value it contains. If the node contains any resources that require proper destruction (such as raw pointers), this approach would be necessary. However, if the node only contains simple data types or objects that manage their own resources, calling `destroy` on the node might not be needed. After the node has been destroyed, the method then deallocates the memory associated with the node.
+Please notice that the usual practice in C++ is first destroying an object before deallocating its memory, something looks like:
+
+```cpp
+data_allocator::destroy(tracystl::address_of(p->value)); 
+node_allocator::deallocate(p);
+```
+
+This method first calls `destroy` on the value contained in a node, which would call the destructor of the object (not the node itself). Then it calls `deallocate` on the node, which should free the memory associated with the node. This approach is consistent with the usual practice in C++ of first destroying an object before deallocating its memory.
 
 ## Testing
 
@@ -44,3 +54,4 @@ We used Google Test Framework for unit tests.
 ## TODO
 
 * Instead of using ::operator new(), realize `alloc::allocate(n * sizeof(T))` and create a threadpool.
+* Address list-note1.
