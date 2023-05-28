@@ -47,6 +47,8 @@ node_allocator::deallocate(pos.node_->as_node());
 
 This method first calls `destroy` on the value contained in a node, which would call the destructor of the object (not the node itself). Then it calls `deallocate` on the node, which should free the memory associated with the node. This approach is consistent with the usual practice in C++ of first destroying an object before deallocating its memory.
 
+#### deque
+
 ### Associative containers
 
 ## Testing
