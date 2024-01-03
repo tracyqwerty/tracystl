@@ -55,7 +55,9 @@ This method first calls `destroy` on the value contained in a node, which would 
 
 We used Google Test Framework for unit tests.
 
+## Reference
 
+[STL源码剖析](STL源码剖析.pdf)
 
 ## TODO
 
